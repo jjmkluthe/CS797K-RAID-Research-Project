@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /dev/sdf (device)
+ Date   : Fri Apr 17 01:12:28 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     118 MB/s
+ Sequential Read  (1 job)                     118 MB/s
+ Random Write     (1 job)                     358 IOPS
+ Random Read      (1 job)                     370 IOPS
+
+ Sequential Write (4 jobs)                    109 MB/s
+ Sequential Read  (4 jobs)                    184 MB/s
+ Random Write     (4 jobs)                    366 IOPS
+ Random Read      (4 jobs)                    380 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/sdf_20260417_011228.txt
+=============================================

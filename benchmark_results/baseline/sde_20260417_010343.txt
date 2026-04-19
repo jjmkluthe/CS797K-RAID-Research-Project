@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /dev/sde (device)
+ Date   : Fri Apr 17 01:03:43 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     112 MB/s
+ Sequential Read  (1 job)                     114 MB/s
+ Random Write     (1 job)                     341 IOPS
+ Random Read      (1 job)                     350 IOPS
+
+ Sequential Write (4 jobs)                    110 MB/s
+ Sequential Read  (4 jobs)                    200 MB/s
+ Random Write     (4 jobs)                    345 IOPS
+ Random Read      (4 jobs)                    329 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/sde_20260417_010343.txt
+=============================================

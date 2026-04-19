@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /testpool (filesystem)
+ Date   : Sat Apr 18 03:23:28 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     244 MB/s
+ Sequential Read  (1 job)                    5636 MB/s
+ Random Write     (1 job)                    2381 IOPS
+ Random Read      (1 job)                   59.5k IOPS
+
+ Sequential Write (4 jobs)                    263 MB/s
+ Sequential Read  (4 jobs)                   6531 MB/s
+ Random Write     (4 jobs)                    511 IOPS
+ Random Read      (4 jobs)                   1084 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/testpool_20260418_032328.txt
+=============================================

@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /dev/md1 (device)
+ Date   : Fri Apr 17 02:37:07 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     226 MB/s
+ Sequential Read  (1 job)                     227 MB/s
+ Random Write     (1 job)                     723 IOPS
+ Random Read      (1 job)                     613 IOPS
+
+ Sequential Write (4 jobs)                    142 MB/s
+ Sequential Read  (4 jobs)                    266 MB/s
+ Random Write     (4 jobs)                    723 IOPS
+ Random Read      (4 jobs)                    627 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/md1_20260417_023707.txt
+=============================================

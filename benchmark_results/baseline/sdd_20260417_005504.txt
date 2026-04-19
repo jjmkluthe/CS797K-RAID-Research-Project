@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /dev/sdd (device)
+ Date   : Fri Apr 17 12:55:04 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     113 MB/s
+ Sequential Read  (1 job)                     115 MB/s
+ Random Write     (1 job)                     381 IOPS
+ Random Read      (1 job)                     434 IOPS
+
+ Sequential Write (4 jobs)                    109 MB/s
+ Sequential Read  (4 jobs)                    169 MB/s
+ Random Write     (4 jobs)                    389 IOPS
+ Random Read      (4 jobs)                    450 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/sdd_20260417_005504.txt
+=============================================

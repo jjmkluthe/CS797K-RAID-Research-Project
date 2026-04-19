@@ -1,0 +1,21 @@
+=============================================
+ Storage Benchmark
+ Target : /dev/sdc (device)
+ Date   : Fri Apr 17 12:46:39 AM EDT 2026
+=============================================
+
+ Test                                         Result
+ --------------------------------------------------
+ Sequential Write (1 job)                     109 MB/s
+ Sequential Read  (1 job)                     109 MB/s
+ Random Write     (1 job)                     336 IOPS
+ Random Read      (1 job)                     347 IOPS
+
+ Sequential Write (4 jobs)                    104 MB/s
+ Sequential Read  (4 jobs)                    138 MB/s
+ Random Write     (4 jobs)                    347 IOPS
+ Random Read      (4 jobs)                    360 IOPS
+
+=============================================
+ Results saved to: ./benchmark_results/sdc_20260417_004639.txt
+=============================================
