@@ -41,10 +41,9 @@ Enclose in <div class="flex-row">, possibly inner divs as well for mermaid
 ## Author: Joshua Kluthe - S694K397 - Wichita State University
 ### CS 797K Advanced Topics in Data Storage - Final Research Paper
 
-
 #### Abstract
 
-*This paper describes an experimental process involving building and configuring a server, and then configuring and benchmarking multiple RAID and ZFS RAIDZ storage arrays on that server. I will compare the actual performance found for the RAID benchmarks against the theoretical values for each RAID array, and determine the causes for any differences found. Finally, I will discuss how this node could be used as a Lustre HPC server, including the configuration, architecture, and shortcomings of such a system.*
+*This paper describes an experimental process involving building and configuring a server, and then configuring and benchmarking multiple RAID and ZFS RAIDZ storage arrays on that server. I will compare the actual performance found for the RAID benchmarks against the theoretical values for each RAID array, and determine the causes for any differences found. Finally, I will discuss how this node could be used as a Lustre HPC server, including the configuration, architecture, and shortcomings of such a system. Additional information including the benchmarking script and raw benchmark results are available on the author's github [6].*
 
 #### Server Setup
 
@@ -77,7 +76,7 @@ For the OS itself, a 1TB NVMe M.2 drive was used, on which was installed Rocky L
   <figcaption>Fig. 4 - Server OS and Hardware Configuration</figcaption>
 </figure>
 
-After setting up the server hardware and OS, the next step was to make sure the refurbished disks were functioning properly. For testing and benchmarking purposes, I utilized the industry standard fio utility [2]. After performing several benchmarks, however, it was clear that completing this project would require a benchmarking script. Due to time constraints, I utilized claude.ai to generate a script that allow quick benchmarking and extract the essential information I required [3]. This greatly simplified the benchmarking process. The data gathered included sequential and random RW speeds for both a single job and for 4 concurrent jobs. However, for the purposes of this paper I will focus only on the single job, sequential RW results. The benchmarks for the disks are as follows:
+After setting up the server hardware and OS, the next step was to make sure the refurbished disks were functioning properly. For testing and benchmarking purposes, I utilized the industry standard fio utility [2]. After performing several benchmarks, however, it was clear that completing this project would require a benchmarking script. Due to time constraints, I utilized claude.ai to generate a script providing faster benchmarking and extracting only the essential information I required [3]. This greatly simplified the benchmarking process. The data gathered included sequential and random RW speeds for both a single job and for 4 concurrent jobs. However, for the purposes of this paper I will focus only on the single job, sequential RW results. The benchmarks for the disks are as follows:
 
 Disk | Sequential Write (MB/s) | Sequential Read (MB/s) |
 -----|-------------------------|------------------------|
@@ -114,7 +113,7 @@ sudo zfs set primarycache=none testpool
 
 Taking this into consideration, the theoretical and measured results from the experiment are as follows, using N = 4 and X = 115MB/s:
 
-RAID   | Theorerical Write | Measured Write | Theoretical Read | Measured Read |
+RAID   | Theoretical Write | Measured Write | Theoretical Read | Measured Read |
 -------|-------------------|----------------|------------------|---------------|
 RAID 0 | N * X = 460       | 431            | N * X = 460      | 439           |
 RAID 1 | 1 * X = 115       | 106            | N * X = 460      | 112           |
@@ -125,36 +124,37 @@ RAIDZ2 | (N-2) * X = 230   | 194            | (N-2) * X = 230  | 170           |
 
 Fig. 6 - Theoretical and Measured Result Comparison
 
-Some of these are very much inline with the theoretical values, others differ greatly. RAID 0 performed almost perfectly according to expectations. RAID 1, however, had a read speed on the order of a single disk. However, examining the benchmark data for read speed with 4 concurrent jobs, the results where 447MB/s, almost matching the theoretical maximum. RAID 5 and 6 both came with in the ballpark of the theorized values, but with some difficult to explain deviations. My research has not found a satisfactory explanation for this behavior. Slower than expected speeds are likely due to parity checking overhead, but faster speeds are more difficult to explain in this case. RAIDZ1 performed quite well on read speed, but clearly software overhead on parity checks made it suffer more than expected on write speed. RAIDZ2, while also clearly suffering from overhead, actually performed quite consistently in this test.
+Some of these are very much inline with the theoretical values, others differ greatly. RAID 0 performed almost perfectly according to expectations. RAID 1, however, had a read speed on the order of a single disk. However, examining the benchmark data for read speed with 4 concurrent jobs, the results were 447MB/s, almost matching the theoretical maximum. RAID 5 and 6 both came with in the ballpark of the theorized values, but with some deviations from expectations. Slower than expected speeds are likely due to parity checking overhead or partial stripe alignment issues. The faster than expected speeds are more difficult to explain in this case, and further testing and research is required to properly explain this result. RAIDZ1 performed quite well on read speed, but clearly software overhead on parity checks made it suffer more than expected on write speed. RAIDZ2, while also clearly suffering from overhead, actually performed quite consistently in this test.
 
 #### Would this Server Pass Muster for a Lustre Cluster?
 
-One of the goals of this project was to experiment with different RAID configurations as possible OSTs for a Lustre installation. Would this server be able to support this? The simple answer is yes. A Lustre server requires A Management Target (MGT), a Metadata Target (MDT), an Object Storage Server (OSS), and one or more Object Storage Targets (OSTs) to function. Preferably, these would be separated on different servers backed up by failover servers, but this is not strictly necessary. In my server example, a single NVMe running Rocky Linux with the Lustre kernel patch would be able to run the MGT, MDT, and OSS daemons necessary to exploit the RAID array as an OST, and serve this to clients. However, it would have multiple shortcomings. First, running Lustre on top of the RAID array would actually slow it down due to the additional CPU overhead. Lustre is intended to coordinate multiple servers to combine them into a high performance computing network, but running on a single node adds additional overhead. Secondly, not only would this setup not have failover servers for MGT, MDT and OSS servers, it would have a single point of failure by running all of these daemons on a single NVMe drive. In short, although this is a useful setup for experimentation and benchmarking, it does not pass muster for a Lustre cluster.
+One of the goals of this project was to experiment with different RAID configurations as possible OSTs for a Lustre installation. Would this server be able to support this? Technically, yes, it is capable of supporting a Lustre cluster. A Lustre server requires a Management Target (MGT), a Metadata Target (MDT), an Object Storage Server (OSS), and one or more Object Storage Targets (OSTs) to function. Preferably, these would be separated on different servers backed up by failover servers, but this is not strictly necessary. In my server example, a single NVMe running Rocky Linux with the Lustre kernel patch would be able to run the MGT, MDT, and OSS daemons necessary to exploit the RAID array as an OST, and serve this to clients. However, it would have multiple shortcomings. First, running Lustre on top of the RAID array would actually slow it down due to the additional CPU overhead. Lustre is intended to coordinate multiple servers to combine them into a high performance computing network, but running on a single node adds additional overhead. Secondly, not only would this setup not have failover servers for MGT, MDT and OSS servers, it would have a single point of failure by running all of these daemons on a single NVMe drive. In conclusion, although this is a useful setup for experimentation and benchmarking and can support a Lustre installation, it does not pass muster for a useable Lustre cluster.
 
 <div style="page-break-after: always"></div>
 
 #### Citations
 
-[1] Seagate Technology, "Seagate Constellation.2 FIPS Product Manual," Seagate Technology LLC, Doc. No. DS1719-4, Jul. 2012. [Online]. <br>
-Available: https://www.seagate.com/www-content/product-content/constellation-fam/constellation/constellation-2/en-us/docs/constellation2-fips-ds1719-4-1207us.pdf <br>
+[1] Seagate Technology, "Seagate Constellation.2 FIPS Product Manual," Seagate Technology LLC, Doc. No. DS1719-4, Jul. 2012. <br>
+[Online]. Available: https://www.seagate.com/www-content/product-content/constellation-fam/constellation/constellation-2/en-us/docs/constellation2-fips-ds1719-4-1207us.pdf <br>
 [Accessed: Apr. 2026].
 
-[2] J. Axboe, "fio - Flexible I/O Tester,", version 3.x. GitHub. [Online].<br>
-Available: https://github.com/axboe/fio<br>
+[2] J. Axboe, "fio - Flexible I/O Tester," GitHub. <br>
+[Online]. Available: https://github.com/axboe/fio<br>
 [Accessed: Apr. 2026].
 
 [3] Anthropic, "Claude Sonnet 4.6," claude.ai.<br>
 Prompt: "Please generate a bash script that will run fio against disks and RAID targets, and extract RW speeds and IOPS in a simple, readable format and save them to a file" <br>
 [Online]. Available: https://claude.ai [Accessed: Apr. 2026].
 
-[4] Mirazon, "RAID Performance Considerations," Mirazon, Jul. 2025. 
-[Online].<br>
-Available: 
-https://www.mirazon.com/raid-performance-considerations/ <br>
+[4] Mirazon, "RAID Performance Considerations," Mirazon, Jul. 2025. <br>
+[Online]. Available: https://www.mirazon.com/raid-performance-considerations/ <br>
 [Accessed: Apr. 2026].
 
-[5] Klara Systems, "5 Reasons Why Your ZFS Storage Benchmarks Are Wrong,"
-Klara Systems, Oct. 2024. [Online]. <br>
- Available:
-https://klarasystems.com/articles/5-reasons-why-your-zfs-storage-benchmarks-are-wrong/ <br>
+[5] Klara Systems, "5 Reasons Why Your ZFS Storage Benchmarks Are Wrong," <br>
+Klara Systems, Oct. 2024. <br>
+[Online]. Available: https://klarasystems.com/articles/5-reasons-why-your-zfs-storage-benchmarks-are-wrong/ <br>
+[Accessed: Apr. 2026].
+
+[6] J. Kluthe, "RAID Server Benchmark Results," GitHub, Apr. 2026. <br>
+[Online]. Available: https://github.com/jjmkluthe/CS797K-RAID-Research-Project <br>
 [Accessed: Apr. 2026].
