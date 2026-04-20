@@ -58,11 +58,11 @@ Two additional disks were also installed during this hardware setup, although th
 
 <div class=flex-row>
   <figure>
-    <img src="./images/disks.JPG" alt="Disk Installation">
+    <img src="./images/disks.png" alt="Disk Installation">
     <figcaption>Fig. 2 - Four RAID disks and two additional disks installed</figcaption>
   </figure>
     <figure>
-    <img src="./images/server.JPG" alt="Server">
+    <img src="./images/server.png" alt="Server">
     <figcaption>Fig. 3 - The server node. Proper cable management was deemed unnecessary and impossible</figcaption>
   </figure>
 </div>
